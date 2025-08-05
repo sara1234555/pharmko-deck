@@ -1,3 +1,4 @@
+
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer } from "recharts";
@@ -11,12 +12,6 @@ const data = [
   { year: "2025", income: 2757434 }
 ];
 
-const valuationChart = [
-  { scenario: "Base Case", multiple: 10, valuation: 15.3 },
-  { scenario: "Mid Case", multiple: 15, valuation: 22.95 },
-  { scenario: "Aggressive", multiple: 20, valuation: 30.6 }
-];
-
 const marginChart = [
   { year: "2022", margin: 53.1 },
   { year: "2023", margin: 24.5 },
@@ -28,6 +23,12 @@ const sensitivityChart = [
   { scenario: "Conservative", margin: 45, valuation: 18.5 },
   { scenario: "Balanced", margin: 56, valuation: 22.95 },
   { scenario: "Optimistic", margin: 62, valuation: 27.5 }
+];
+
+const valuationChart = [
+  { scenario: "Base Case", multiple: 10, valuation: 15.3 },
+  { scenario: "Mid Case", multiple: 15, valuation: 22.95 },
+  { scenario: "Aggressive", multiple: 20, valuation: 30.6 }
 ];
 
 const deckSlides = [
@@ -47,49 +48,10 @@ const deckSlides = [
   },
   {
     title: "Exit Valuation Scenarios",
-    barChart: true
-  },
-  {
-    title: "Summary Financial Table",
-    table: {
-      headers: ["Year", "Income ($M)", "EBITDA ($K)", "EBITDA %"],
-      rows: [
-        ["2022", "1.60", "850", "53.1%"],
-        ["2023", "2.16", "530", "24.5%"],
-        ["2024", "1.96", "750 est.", "38%"],
-        ["2025", "2.75", "1,530", "56%"]
-      ]
-    }
-  },
-  {
-    title: "Exit Multiples Chart",
-    table: {
-      headers: ["Scenario", "Multiple", "Valuation ($M)", "Notes"],
-      rows: [
-        ["Base Case", "10x", "15.3", "2025 EBITDA baseline"],
-        ["Mid Case", "15x", "22.95", "Most likely target range"],
-        ["Aggressive", "20x", "30.6", "Assumes premium payor mix"],
-        ["Target Range", "10–20x", "21–46", "Strategic buyer scenarios"]
-      ]
-    }
-  },
-  {
-    title: "Summary Financial Table",
-    bullets: [
-      "2022: Income $1.6M | EBITDA $850K (53.1%)",
-      "2023: Income $2.16M | EBITDA $530K (24.5%)",
-      "2024: Income $1.96M | EBITDA est. $750K (38%)",
-      "2025: Income $2.75M (proj) | EBITDA $1.53M (56%)"
-    ]
-  },
-  {
-    title: "Exit Multiples Chart",
-    bullets: [
-      "Base Case (10x): $15.3M EV (2025 EBITDA)",
-      "Mid Case (15x): $22.95M EV",
-      "Aggressive (20x): $30.6M EV",
-      "Target Range: $21M–$46M depending on growth and payor mix"
-    ]
+    chartData: valuationChart,
+    xKey: "scenario",
+    yKey: "valuation",
+    color: "#10b981"
   },
   {
     title: "Welcome to Pharmko",
@@ -106,7 +68,10 @@ const deckSlides = [
   },
   {
     title: "Financial Performance (2022–2025)",
-    chart: true
+    chartData: data,
+    xKey: "year",
+    yKey: "income",
+    color: "#3b82f6"
   },
   {
     title: "Forward-Looking Projections",
@@ -149,6 +114,7 @@ export default function InvestorDeck() {
           <Card className="shadow-xl rounded-2xl p-4">
             <CardContent className="relative">
               <h2 className="text-xl font-bold mb-2">{slide.title}</h2>
+
               {slide.imageOnly ? (
                 <div className="flex justify-center items-center h-60">
                   <Image src="/pharmko-logo.jpg" alt="Pharmko Logo" width={220} height={90} />
@@ -162,41 +128,14 @@ export default function InvestorDeck() {
                     <Bar dataKey={slide.yKey} fill={slide.color} />
                   </BarChart>
                 </ResponsiveContainer>
-              ) : slide.barChart ? (
-                <ResponsiveContainer width="100%" height={300}>
-                  <BarChart data={data}>
-                    <XAxis dataKey="year" />
-                    <YAxis />
-                    <Tooltip />
-                    <Bar dataKey="income" fill="#3b82f6" />
-                  </BarChart>
-                </ResponsiveContainer>
-              ) : slide.table ? (
-                <table className="w-full text-sm border border-gray-300">
-                  <thead>
-                    <tr className="bg-gray-100">
-                      {slide.table.headers.map((header, idx) => (
-                        <th key={idx} className="border px-2 py-1">{header}</th>
-                      ))}
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {slide.table.rows.map((row, ridx) => (
-                      <tr key={ridx}>
-                        {row.map((cell, cidx) => (
-                          <td key={cidx} className="border px-2 py-1">{cell}</td>
-                        ))}
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              ) : (
+              ) : slide.bullets ? (
                 <ul className="list-disc pl-5 space-y-1">
                   {slide.bullets.map((item, i) => (
                     <li key={i}>{item}</li>
                   ))}
                 </ul>
-              )}
+              ) : null}
+
               <div className="absolute bottom-2 right-4 opacity-80">
                 <Image src="/pharmko-logo.jpg" alt="Pharmko Logo" width={100} height={40} />
               </div>
